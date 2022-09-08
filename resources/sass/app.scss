@@ -1,0 +1,23 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+/*div{
+    border: 1px solid red;
+}*/
+
+html{
+    min-height:100%;
+    position:relative;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f3f4f6;
+}
+
+.hide{
+    display: none;
+}
