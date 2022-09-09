@@ -6,10 +6,11 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class UserCanBeAssignedRoleTest extends TestCase
+class UserRoleTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -40,5 +41,39 @@ class UserCanBeAssignedRoleTest extends TestCase
         {
             $this->fail('User was not assigned to role');
         }
+    }
+
+    /** @test */
+    public function admin_user_can_access_admin()
+    {
+        // Create User
+        $user = User::factory()->create();
+
+        // Create Role
+        $role = Role::create([
+            'name' => 'admin'
+        ]);
+
+        // Create Permission
+        $permission = Permission::create([
+            'name' => 'admin_view',
+        ]);
+
+        // Assign Role to User
+        $user->assignRole($role->name);
+
+        // Assign permission to Role
+        $role->givePermissionTo($permission->name);
+
+        // Log user into admin dashboard
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        // Emulate User and GET request to /admin
+        $response = $this->actingAs($user)->get('/admin');
+
+        $response->assertStatus(200);
     }
 }
