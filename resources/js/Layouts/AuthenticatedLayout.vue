@@ -1,13 +1,12 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/inertia-vue3';
-
-const showingNavigationDropdown = ref(false);
+    import { ref } from 'vue';
+    import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+    import Dropdown from '@/Components/Dropdown.vue';
+    import DropdownLink from '@/Components/DropdownLink.vue';
+    import NavLink from '@/Components/NavLink.vue';
+    import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+    import { Link } from '@inertiajs/inertia-vue3';
+    const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
@@ -30,6 +29,17 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
+                                <template v-if="$page.props.auth.isAdmin">
+                                    <NavLink :href="route('user.index')" :active="route().current('user.index')">
+                                        Users
+                                    </NavLink>
+                                    <NavLink :href="route('item.index')" :active="route().current('item.index')">
+                                        Items
+                                    </NavLink>
+                                    <NavLink :href="route('will.index')" :active="route().current('will.index')">
+                                        Wills
+                                    </NavLink>
+                                </template>
                             </div>
                         </div>
 
@@ -41,7 +51,6 @@ const showingNavigationDropdown = ref(false);
                                         <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
-
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
@@ -50,8 +59,11 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile')" method="get">
-                                            Profile
+                                        <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin-dashboard')" method="get" as="button">
+                                            Admin
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('dashboard')" method="get" as="button">
+                                            Dashboard
                                         </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out

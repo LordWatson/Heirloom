@@ -54,16 +54,8 @@ class UserRoleTest extends TestCase
             'name' => 'admin'
         ]);
 
-        // Create Permission
-        $permission = Permission::create([
-            'name' => 'admin_view',
-        ]);
-
         // Assign Role to User
         $user->assignRole($role->name);
-
-        // Assign permission to Role
-        $role->givePermissionTo($permission->name);
 
         // Log user into admin dashboard
         $response = $this->post('/login', [
@@ -75,5 +67,31 @@ class UserRoleTest extends TestCase
         $response = $this->actingAs($user)->get('/admin');
 
         $response->assertStatus(200);
+    }
+
+    /** @test */
+    public function standard_user_cannot_access_admin()
+    {
+        // Create User
+        $user = User::factory()->create();
+
+        // Create Role
+        $role = Role::create([
+            'name' => 'user'
+        ]);
+
+        // Assign Role to User
+        $user->assignRole($role->name);
+
+        // Log user into admin dashboard
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        // Emulate User and GET request to /admin
+        $response = $this->actingAs($user)->get('/admin');
+
+        $response->assertRedirect('/dashboard');
     }
 }
