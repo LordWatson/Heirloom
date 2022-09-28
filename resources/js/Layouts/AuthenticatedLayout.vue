@@ -108,13 +108,16 @@
                     </div>
                 </div>
             </nav>
-
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
+
+            <div v-if="$page.props.flash.message" class="p-4 mb-4 text-sm text-blue-700 bg-blue-100 dark:bg-blue-400 dark:text-blue-800" role="alert">
+                <div class="max-w-7xl mx-auto">{{ $page.props.flash.message }}</div>
+            </div>
 
             <!-- Page Content -->
             <main>

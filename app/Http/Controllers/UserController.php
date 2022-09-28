@@ -63,10 +63,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user) : RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
         ]);
+
+        $user->update($validated);
 
         return Redirect::route('user.index')->with('message', 'User updated successfully.');
     }
