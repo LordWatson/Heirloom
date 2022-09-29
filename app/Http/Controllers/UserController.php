@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -63,9 +64,15 @@ class UserController extends Controller
 
     public function update(Request $request, User $user) : RedirectResponse
     {
+        /*
+         * Email should be unique, but that doesn't work if the email is the existing users email
+         * So we tell the validation to ignore the unique rule when this happens
+         * */
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => ['string', 'required', 'email', 'max:255',
+                    Rule::unique('users')->ignore($user),
+                ],
         ]);
 
         $user->update($validated);
@@ -73,14 +80,10 @@ class UserController extends Controller
         return Redirect::route('user.index')->with('message', 'User updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(User $user) : RedirectResponse
     {
-        dd('Delete');
+        $user->delete();
+
+        return Redirect::back()->with('message', 'User deleted successfully.');
     }
 }

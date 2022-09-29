@@ -29,7 +29,6 @@ class Playground extends Command
      */
     public function handle()
     {
-        $user = User::find(2);
-        $user->assignRole('user');
+        //User::factory(10)->create();
     }
 }
